@@ -26,8 +26,7 @@ function formatDate(s: string): string {
       </header>
       <div class="panel-body">
         <p class="note">
-          支払日が今日以降の取引を支払日ごとに合計しています。
-          （APIの仕様上、締日=0の支払元だけを除外することはできないため、すべての支払元を含めています）
+          支払日が今日以降の取引のうち、締日が0ではない支払元に紐づくものだけを支払日ごとに合計しています。
         </p>
         <p v-if="loading" class="status">読み込み中...</p>
         <p v-else-if="error" class="status error">{{ error }}</p>

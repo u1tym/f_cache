@@ -75,9 +75,20 @@ async function loadSummary() {
   const from = todayISO()
   const to = '9999-12-31'
   try {
+    if (!paymentSources.value.length) {
+      await loadPaymentSources()
+    }
+    const targetSourceIds = new Set(
+      paymentSources.value
+        .filter((ps) => ps.closing_day !== 0)
+        .map((ps) => ps.id)
+    )
     const res = await searchByPaidDate(from, to)
     const map = new Map<string, number>()
     for (const t of res.items) {
+      if (!targetSourceIds.has(t.payment_source_id)) {
+        continue
+      }
       const current = map.get(t.paid_date) ?? 0
       map.set(t.paid_date, current + t.amount)
     }

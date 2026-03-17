@@ -1,6 +1,9 @@
 export interface PaymentSource {
   id: number
   name: string
+  closing_day: number
+  pay_month_diff: number
+  pay_day: number
 }
 
 export interface Transaction {
