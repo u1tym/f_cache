@@ -86,3 +86,17 @@ export async function searchByUsedDate(
     }
   )
 }
+
+/** 支払日期間で収支一覧取得 */
+export async function searchByPaidDate(
+  dateFrom: string,
+  dateTo: string
+): Promise<{ items: Transaction[] }> {
+  return request<{ items: Transaction[] }>(
+    '/transactions/search-by-paid-date',
+    {
+      method: 'POST',
+      body: JSON.stringify({ date_from: dateFrom, date_to: dateTo }),
+    }
+  )
+}

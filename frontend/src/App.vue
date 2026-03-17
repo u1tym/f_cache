@@ -2,8 +2,15 @@
 import { ref, onMounted } from 'vue'
 import TransactionList from './components/TransactionList.vue'
 import TransactionForm from './components/TransactionForm.vue'
+import PaymentSummary from './components/PaymentSummary.vue'
 import type { PaymentSource, Transaction, TransactionFormData } from './types'
-import { getPaymentSources, searchByUsedDate, createTransaction, updateTransaction } from './api/client'
+import {
+  getPaymentSources,
+  searchByUsedDate,
+  searchByPaidDate,
+  createTransaction,
+  updateTransaction,
+} from './api/client'
 import { todayISO, toISODate, daysAgo } from './utils/date'
 
 const title = '収支管理'
@@ -14,6 +21,16 @@ const formVisible = ref(false)
 const editItem = ref<Transaction | null>(null)
 const loading = ref(false)
 const error = ref('')
+
+type PaidSummaryItem = {
+  paid_date: string
+  total_amount: number
+}
+
+const summaryVisible = ref(false)
+const summaryLoading = ref(false)
+const summaryError = ref('')
+const summaryItems = ref<PaidSummaryItem[]>([])
 
 function setTodayLabel() {
   const d = new Date()
@@ -26,7 +43,7 @@ function setTodayLabel() {
 
 async function loadList() {
   const end = new Date()
-  const start = daysAgo(end, 10)
+  const start = daysAgo(end, 60)
   const dateFrom = toISODate(start)
   const dateTo = todayISO()
   loading.value = true
@@ -51,6 +68,30 @@ async function loadPaymentSources() {
   }
 }
 
+async function loadSummary() {
+  summaryLoading.value = true
+  summaryError.value = ''
+  summaryItems.value = []
+  const from = todayISO()
+  const to = '9999-12-31'
+  try {
+    const res = await searchByPaidDate(from, to)
+    const map = new Map<string, number>()
+    for (const t of res.items) {
+      const current = map.get(t.paid_date) ?? 0
+      map.set(t.paid_date, current + t.amount)
+    }
+    summaryItems.value = Array.from(map.entries())
+      .map(([paid_date, total_amount]) => ({ paid_date, total_amount }))
+      .sort((a, b) => (a.paid_date < b.paid_date ? -1 : a.paid_date > b.paid_date ? 1 : 0))
+  } catch (e) {
+    summaryError.value =
+      e instanceof Error ? e.message : '支払日ごとの合計の取得に失敗しました'
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
 onMounted(() => {
   setTodayLabel()
   loadPaymentSources()
@@ -72,6 +113,15 @@ function closeForm() {
   editItem.value = null
 }
 
+function openSummary() {
+  summaryVisible.value = true
+  loadSummary()
+}
+
+function closeSummary() {
+  summaryVisible.value = false
+}
+
 async function handleSubmit(data: TransactionFormData) {
   error.value = ''
   try {
@@ -91,8 +141,15 @@ async function handleSubmit(data: TransactionFormData) {
 <template>
   <div class="app">
     <header class="header">
-      <h1 class="title">{{ title }}</h1>
-      <p class="today">{{ todayLabel }}</p>
+      <div class="header-main">
+        <div>
+          <h1 class="title">{{ title }}</h1>
+          <p class="today">{{ todayLabel }}</p>
+        </div>
+        <button type="button" class="btn-summary" @click="openSummary">
+          支払日ごとの合計
+        </button>
+      </div>
     </header>
 
     <main class="main">
@@ -121,6 +178,14 @@ async function handleSubmit(data: TransactionFormData) {
       @close="closeForm"
       @submit="handleSubmit"
     />
+
+    <PaymentSummary
+      :visible="summaryVisible"
+      :loading="summaryLoading"
+      :error="summaryError"
+      :items="summaryItems"
+      @close="closeSummary"
+    />
   </div>
 </template>
 
@@ -141,6 +206,13 @@ async function handleSubmit(data: TransactionFormData) {
   flex-shrink: 0;
 }
 
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .title {
   margin: 0 0 4px 0;
   font-size: 1.35rem;
@@ -151,6 +223,17 @@ async function handleSubmit(data: TransactionFormData) {
   margin: 0;
   font-size: 0.9rem;
   opacity: 0.95;
+}
+
+.btn-summary {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
 }
 
 .main {
