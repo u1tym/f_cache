@@ -167,7 +167,7 @@ function handleClose() {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(196, 181, 212, 0.35);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -180,9 +180,9 @@ function handleClose() {
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
-  background: #fff;
+  background: #fefcfe;
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -4px 20px rgba(122, 111, 133, 0.2);
 }
 
 .form-header {
@@ -190,12 +190,13 @@ function handleClose() {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e8e2ec;
 }
 
 .form-header h2 {
   margin: 0;
   font-size: 1.15rem;
+  color: #3d3548;
 }
 
 .btn-close {
@@ -205,14 +206,14 @@ function handleClose() {
   background: transparent;
   font-size: 1.5rem;
   line-height: 1;
-  color: #666;
+  color: #7a6f85;
   cursor: pointer;
   border-radius: 50%;
 }
 
 .btn-close:hover,
 .btn-close:active {
-  background: #f0f0f0;
+  background: #efe9f2;
 }
 
 .form-body {
@@ -227,7 +228,7 @@ function handleClose() {
 .form-body label span {
   display: block;
   font-size: 0.85rem;
-  color: #555;
+  color: #5a5466;
   margin-bottom: 4px;
 }
 
@@ -236,21 +237,22 @@ function handleClose() {
   width: 100%;
   padding: 12px 14px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #d4cce0;
   border-radius: 8px;
   box-sizing: border-box;
+  background: #fff;
 }
 
 .form-body input:focus,
 .form-body select:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: #b8a8c8;
+  box-shadow: 0 0 0 2px rgba(196, 181, 212, 0.35);
 }
 
 .budget-note {
   font-size: 0.8rem;
-  color: #888;
+  color: #9a8fa8;
   margin: 8px 0 16px;
 }
 
@@ -271,17 +273,17 @@ function handleClose() {
 }
 
 .btn-cancel {
-  background: #f0f0f0;
-  color: #333;
+  background: #e8e2ec;
+  color: #3d3548;
 }
 
 .btn-submit {
-  background: #3498db;
-  color: #fff;
+  background: #b8d4e3;
+  color: #3d3548;
 }
 
 .btn-submit:hover,
 .btn-submit:active {
-  background: #2980b9;
+  background: #a8c4d3;
 }
 </style>

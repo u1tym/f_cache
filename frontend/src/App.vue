@@ -23,6 +23,7 @@ const loading = ref(false)
 const error = ref('')
 
 type PaidSummaryItem = {
+  payment_source_name: string
   paid_date: string
   total_amount: number
 }
@@ -84,17 +85,23 @@ async function loadSummary() {
         .map((ps) => ps.id)
     )
     const res = await searchByPaidDate(from, to)
-    const map = new Map<string, number>()
+    const map = new Map<string, { payment_source_name: string; paid_date: string; total_amount: number }>()
     for (const t of res.items) {
       if (!targetSourceIds.has(t.payment_source_id)) {
         continue
       }
-      const current = map.get(t.paid_date) ?? 0
-      map.set(t.paid_date, current + t.amount)
+      const key = `${t.payment_source_id}:${t.paid_date}`
+      const cur = map.get(key)
+      const name = t.payment_source_name ?? ''
+      if (cur) {
+        map.set(key, { ...cur, total_amount: cur.total_amount + t.amount })
+      } else {
+        map.set(key, { payment_source_name: name, paid_date: t.paid_date, total_amount: t.amount })
+      }
     }
-    summaryItems.value = Array.from(map.entries())
-      .map(([paid_date, total_amount]) => ({ paid_date, total_amount }))
-      .sort((a, b) => (a.paid_date < b.paid_date ? -1 : a.paid_date > b.paid_date ? 1 : 0))
+    summaryItems.value = Array.from(map.values()).sort(
+      (a, b) => (a.paid_date < b.paid_date ? -1 : a.paid_date > b.paid_date ? 1 : 0)
+    )
   } catch (e) {
     summaryError.value =
       e instanceof Error ? e.message : '支払日ごとの合計の取得に失敗しました'
@@ -205,9 +212,9 @@ async function handleSubmit(data: TransactionFormData) {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f6fa;
-  --color-header-bg: #2c3e50;
-  --color-header-text: #fff;
+  background: #f8f4f8;
+  --color-header-bg: #c4b5d4;
+  --color-header-text: #3d3548;
 }
 
 .header {
@@ -241,9 +248,9 @@ async function handleSubmit(data: TransactionFormData) {
   padding: 8px 12px;
   font-size: 0.8rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  border: 1px solid rgba(61, 53, 72, 0.35);
+  background: rgba(255, 255, 255, 0.6);
+  color: #3d3548;
   cursor: pointer;
 }
 
@@ -256,13 +263,13 @@ async function handleSubmit(data: TransactionFormData) {
 }
 
 .error {
-  color: #c0392b;
+  color: #b85c6c;
   font-size: 0.9rem;
   margin: 0 0 12px 0;
 }
 
 .loading {
-  color: #666;
+  color: #7a6f85;
   margin: 12px 0;
 }
 
@@ -274,9 +281,9 @@ async function handleSubmit(data: TransactionFormData) {
   height: 56px;
   border-radius: 50%;
   border: none;
-  background: #3498db;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+  background: #b8d4e3;
+  color: #3d3548;
+  box-shadow: 0 4px 12px rgba(147, 181, 198, 0.5);
   cursor: pointer;
   display: flex;
   align-items: center;

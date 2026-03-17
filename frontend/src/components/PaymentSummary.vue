@@ -3,7 +3,7 @@ defineProps<{
   visible: boolean
   loading: boolean
   error: string
-  items: { paid_date: string; total_amount: number }[]
+  items: { payment_source_name: string; paid_date: string; total_amount: number }[]
 }>()
 
 const emit = defineEmits<{
@@ -21,18 +21,15 @@ function formatDate(s: string): string {
   <div v-if="visible" class="overlay" @click.self="emit('close')">
     <div class="panel">
       <header class="panel-header">
-        <h2>支払日ごとの合計</h2>
+        <h2>支払予定集計</h2>
         <button type="button" class="btn-close" @click="emit('close')">×</button>
       </header>
       <div class="panel-body">
-        <p class="note">
-          支払日が今日以降の取引のうち、締日が0ではない支払元に紐づくものだけを支払日ごとに合計しています。
-        </p>
         <p v-if="loading" class="status">読み込み中...</p>
         <p v-else-if="error" class="status error">{{ error }}</p>
         <ul v-else class="list">
-          <li v-for="item in items" :key="item.paid_date" class="row">
-            <span class="date">{{ formatDate(item.paid_date) }}</span>
+          <li v-for="(item, i) in items" :key="`${item.payment_source_name}-${item.paid_date}-${i}`" class="row">
+            <span class="label">{{ item.payment_source_name }}　{{ formatDate(item.paid_date) }}</span>
             <span class="amount">{{ item.total_amount.toLocaleString() }} 円</span>
           </li>
           <li v-if="items.length === 0" class="empty">対象となる支払日はありません</li>
@@ -46,7 +43,7 @@ function formatDate(s: string): string {
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(196, 181, 212, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,9 +55,9 @@ function formatDate(s: string): string {
   width: 100%;
   max-width: 420px;
   max-height: 90vh;
-  background: #fff;
+  background: #fefcfe;
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 20px rgba(122, 111, 133, 0.2);
   display: flex;
   flex-direction: column;
 }
@@ -70,12 +67,15 @@ function formatDate(s: string): string {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e8e2ec;
+  background: #f5f0f8;
+  border-radius: 12px 12px 0 0;
 }
 
 .panel-header h2 {
   margin: 0;
   font-size: 1rem;
+  color: #3d3548;
 }
 
 .btn-close {
@@ -85,7 +85,13 @@ function formatDate(s: string): string {
   border: none;
   background: transparent;
   font-size: 1.2rem;
+  color: #7a6f85;
   cursor: pointer;
+}
+
+.btn-close:hover,
+.btn-close:active {
+  background: #efe9f2;
 }
 
 .panel-body {
@@ -93,20 +99,14 @@ function formatDate(s: string): string {
   overflow-y: auto;
 }
 
-.note {
-  font-size: 0.75rem;
-  color: #666;
-  margin: 0 0 10px 0;
-}
-
 .status {
   margin: 8px 0;
   font-size: 0.9rem;
-  color: #666;
+  color: #7a6f85;
 }
 
 .status.error {
-  color: #c0392b;
+  color: #b85c6c;
 }
 
 .list {
@@ -119,24 +119,28 @@ function formatDate(s: string): string {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e8e2ec;
   font-size: 0.9rem;
 }
 
-.date {
-  color: #333;
+.label {
+  color: #3d3548;
+  flex: 1;
+  min-width: 0;
 }
 
 .amount {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+  color: #5a5466;
 }
 
 .empty {
   padding: 16px 0;
   text-align: center;
-  color: #888;
+  color: #9a8fa8;
   font-size: 0.85rem;
 }
 </style>
