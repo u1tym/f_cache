@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/mobile/cache/',
   plugins: [vue()],
   server: {
     // 開発時: /api をバックエンドへプロキシし、CORSを回避
