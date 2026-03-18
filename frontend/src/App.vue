@@ -51,7 +51,12 @@ async function loadList() {
   error.value = ''
   try {
     const res = await searchByUsedDate(dateFrom, dateTo)
-    transactions.value = res.items
+    transactions.value = [...res.items].sort((a, b) => {
+      if (a.used_date === b.used_date) {
+        return b.id - a.id
+      }
+      return a.used_date < b.used_date ? 1 : -1
+    })
   } catch (e) {
     error.value = e instanceof Error ? e.message : '一覧の取得に失敗しました'
     transactions.value = []
