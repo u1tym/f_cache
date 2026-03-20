@@ -12,8 +12,10 @@ import {
   updateTransaction,
 } from './api/client'
 import { todayISO, toISODate, daysAgo } from './utils/date'
+import iconMoney from '../images/MONEY.jpg'
+import iconPortal from '../images/PORTAL.jpg'
 
-const title = '収支管理'
+const title = 'MONEY'
 const todayLabel = ref('')
 const transactions = ref<Transaction[]>([])
 const paymentSources = ref<PaymentSource[]>([])
@@ -165,13 +167,21 @@ async function handleSubmit(data: TransactionFormData) {
   <div class="app">
     <header class="header">
       <div class="header-main">
-        <div>
-          <h1 class="title">{{ title }}</h1>
-          <p class="today">{{ todayLabel }}</p>
+        <div class="header-top">
+          <div class="title-with-icon">
+            <img :src="iconMoney" alt="" class="title-page-icon" width="36" height="36" />
+            <h1 class="title">{{ title }}</h1>
+          </div>
+          <a href="../m.html" class="portal-link" aria-label="ポータルへ">
+            <img :src="iconPortal" alt="" class="portal-icon" width="40" height="40" />
+          </a>
         </div>
-        <button type="button" class="btn-summary" @click="openSummary">
-          支払日ごとの合計
-        </button>
+        <div class="header-bottom">
+          <p class="today">{{ todayLabel }}</p>
+          <button type="button" class="btn-summary" @click="openSummary">
+            支払日ごとの合計
+          </button>
+        </div>
       </div>
     </header>
 
@@ -231,13 +241,66 @@ async function handleSubmit(data: TransactionFormData) {
 
 .header-main {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.title-page-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.portal-link {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: -6px;
+  padding: 6px;
+  border-radius: 10px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.portal-link:active {
+  opacity: 0.75;
+}
+
+.portal-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.header-bottom {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
 .title {
-  margin: 0 0 4px 0;
+  margin: 0;
   font-size: 1.35rem;
   font-weight: 600;
 }
