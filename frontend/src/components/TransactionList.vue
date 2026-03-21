@@ -62,9 +62,9 @@ function formatDate(s: string): string {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--color-header-bg, #c4b5d4);
-  color: var(--color-header-text, #3d3548);
-  box-shadow: 0 1px 0 0 rgba(122, 111, 133, 0.2);
+  background: var(--color-header-bg, #ffd4b8);
+  color: var(--color-header-text, #8b3a08);
+  box-shadow: 0 1px 0 0 rgba(180, 74, 10, 0.22);
 }
 
 .transaction-table th {
@@ -87,7 +87,7 @@ function formatDate(s: string): string {
 
 .transaction-table td {
   padding: 12px 10px;
-  border-bottom: 1px solid #e8e2ec;
+  border-bottom: 1px solid #f0dcc8;
 }
 
 .transaction-table td.amount {
@@ -101,12 +101,12 @@ function formatDate(s: string): string {
 }
 .row-click:hover,
 .row-click:active {
-  background: #efe9f2;
+  background: #fff5ed;
 }
 
 .empty {
   text-align: center;
-  color: #9a8fa8;
+  color: #b87a52;
   padding: 24px !important;
 }
 </style>

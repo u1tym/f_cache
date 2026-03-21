@@ -12,8 +12,9 @@ import {
   updateTransaction,
 } from './api/client'
 import { todayISO, toISODate, daysAgo } from './utils/date'
-import iconMoney from '../images/MONEY.jpg'
-import iconPortal from '../images/PORTAL.jpg'
+import iconMoney from '../images/MONEY.png'
+import iconPortal from '../images/PORTAL.png'
+import iconConfig from '../images/CONFIG.png'
 
 const title = 'MONEY'
 const todayLabel = ref('')
@@ -168,13 +169,18 @@ async function handleSubmit(data: TransactionFormData) {
     <header class="header">
       <div class="header-main">
         <div class="header-top">
-          <div class="title-with-icon">
-            <img :src="iconMoney" alt="" class="title-page-icon" width="36" height="36" />
-            <h1 class="title">{{ title }}</h1>
-          </div>
-          <a href="../m.html" class="portal-link" aria-label="ポータルへ">
-            <img :src="iconPortal" alt="" class="portal-icon" width="40" height="40" />
+          <a href="../m.html" class="header-icon-52 portal-link" aria-label="ポータルへ">
+            <img :src="iconPortal" alt="" />
           </a>
+          <div class="header-icon-52" aria-hidden="true">
+            <img :src="iconMoney" alt="" />
+          </div>
+          <h1 class="title">{{ title }}</h1>
+          <div class="header-config" aria-hidden="true">
+            <div class="header-icon-34">
+              <img :src="iconConfig" alt="" />
+            </div>
+          </div>
         </div>
         <div class="header-bottom">
           <p class="today">{{ todayLabel }}</p>
@@ -227,14 +233,17 @@ async function handleSubmit(data: TransactionFormData) {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f8f4f8;
-  --color-header-bg: #c4b5d4;
-  --color-header-text: #3d3548;
+  background: #fff8f3;
+  /* 日付・テーブル行ヘッダなど共通のオレンジ系 */
+  --color-header-bg: #ffd4b8;
+  --color-header-text: #8b3a08;
+  --color-title-orange: #b45100;
+  --color-date-text: #9a4810;
 }
 
 .header {
   background: var(--color-header-bg);
-  color: var(--color-header-text);
+  color: var(--color-date-text);
   padding: 16px 20px;
   flex-shrink: 0;
 }
@@ -247,49 +256,61 @@ async function handleSubmit(data: TransactionFormData) {
 
 .header-top {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.title-with-icon {
-  display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 10px;
   min-width: 0;
 }
 
-.title-page-icon {
+.header-icon-52 {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(180, 74, 10, 0.12);
+}
+
+.header-icon-52 img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  display: block;
+}
+
+.header-icon-34 {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(180, 74, 10, 0.12);
+}
+
+.header-icon-34 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .portal-link {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  margin: -6px;
-  padding: 6px;
-  border-radius: 10px;
+  display: block;
   -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+  color: inherit;
 }
 
 .portal-link:active {
   opacity: 0.75;
 }
 
-.portal-icon {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 8px;
-  display: block;
+.header-config {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
 }
 
 .header-bottom {
@@ -301,14 +322,18 @@ async function handleSubmit(data: TransactionFormData) {
 
 .title {
   margin: 0;
-  font-size: 1.35rem;
+  min-width: 0;
+  font-size: 26px;
+  line-height: 1.2;
   font-weight: 600;
+  color: var(--color-title-orange);
 }
 
 .today {
   margin: 0;
   font-size: 0.9rem;
-  opacity: 0.95;
+  font-weight: 600;
+  color: var(--color-date-text);
 }
 
 .btn-summary {
@@ -316,9 +341,9 @@ async function handleSubmit(data: TransactionFormData) {
   padding: 8px 12px;
   font-size: 0.8rem;
   border-radius: 999px;
-  border: 1px solid rgba(61, 53, 72, 0.35);
-  background: rgba(255, 255, 255, 0.6);
-  color: #3d3548;
+  border: 1px solid rgba(139, 58, 8, 0.45);
+  background: #fff;
+  color: var(--color-header-text);
   cursor: pointer;
 }
 
@@ -337,7 +362,7 @@ async function handleSubmit(data: TransactionFormData) {
 }
 
 .loading {
-  color: #7a6f85;
+  color: #a86b45;
   margin: 12px 0;
 }
 
