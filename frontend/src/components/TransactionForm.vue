@@ -17,6 +17,7 @@ const emit = defineEmits<{
 
 const usedDate = ref(todayISO())
 const purpose = ref('')
+const memo = ref('')
 const amount = ref<number | ''>('')
 const paymentSourceId = ref<number | ''>('')
 const paidDate = ref(todayISO())
@@ -48,12 +49,14 @@ watch(
       if (props.editItem) {
         usedDate.value = props.editItem.used_date
         purpose.value = props.editItem.purpose
+        memo.value = props.editItem.memo ?? ''
         amount.value = props.editItem.amount
         paymentSourceId.value = props.editItem.payment_source_id
         paidDate.value = props.editItem.paid_date
       } else {
         usedDate.value = todayISO()
         purpose.value = ''
+        memo.value = ''
         amount.value = ''
         paymentSourceId.value = props.paymentSources[0]?.id ?? ''
         paidDate.value = todayISO()
@@ -72,6 +75,7 @@ watch(
     if (item) {
       usedDate.value = item.used_date
       purpose.value = item.purpose
+      memo.value = item.memo ?? ''
       amount.value = item.amount
       paymentSourceId.value = item.payment_source_id
       paidDate.value = item.paid_date
@@ -99,8 +103,13 @@ function handleSubmit() {
     payment_source_id: pid as number,
     paid_date: paidDate.value,
     budget_name: budgetName,
-    memo: '',
+    memo: normalizeMemo(memo.value),
   })
+}
+
+/** 改行（\n / \r\n）を保持しつつ前後の空白だけ除去 */
+function normalizeMemo(s: string): string {
+  return s.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim()
 }
 
 function handleClose() {
@@ -112,7 +121,7 @@ function handleClose() {
   <div v-if="visible" class="overlay" @click.self="handleClose">
     <div class="form-panel">
       <div class="form-header">
-        <h2>{{ editItem ? '収支を変更' : '収支を入力' }}</h2>
+        <h2>{{ editItem ? '収支編集' : '収支入力' }}</h2>
         <button type="button" class="btn-close" aria-label="閉じる" @click="handleClose">×</button>
       </div>
       <form class="form-body" @submit.prevent="handleSubmit">
@@ -123,6 +132,16 @@ function handleClose() {
         <label>
           <span>目的</span>
           <input v-model="purpose" type="text" placeholder="例: 食費" required />
+        </label>
+        <label>
+          <span>メモ</span>
+          <textarea
+            v-model="memo"
+            rows="5"
+            placeholder="任意（改行可）"
+            enterkeyhint="enter"
+            class="field-memo"
+          />
         </label>
         <label>
           <span>金額</span>
@@ -233,7 +252,8 @@ function handleClose() {
 }
 
 .form-body input,
-.form-body select {
+.form-body select,
+.form-body textarea {
   width: 100%;
   padding: 12px 14px;
   font-size: 1rem;
@@ -243,8 +263,18 @@ function handleClose() {
   background: #fff;
 }
 
+.form-body textarea.field-memo {
+  resize: vertical;
+  min-height: 6.5em;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 .form-body input:focus,
-.form-body select:focus {
+.form-body select:focus,
+.form-body textarea:focus {
   outline: none;
   border-color: #b8a8c8;
   box-shadow: 0 0 0 2px rgba(196, 181, 212, 0.35);
