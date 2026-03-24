@@ -169,7 +169,7 @@ async function handleSubmit(data: TransactionFormData) {
     <header class="header">
       <div class="header-main">
         <div class="header-top">
-          <a href="../m.html" class="header-icon-52 portal-link" aria-label="ポータルへ">
+          <a href="/mobile/login/#/menu" class="header-icon-52 portal-link" aria-label="ポータルへ">
             <img :src="iconPortal" alt="" />
           </a>
           <div class="header-icon-52" aria-hidden="true">
